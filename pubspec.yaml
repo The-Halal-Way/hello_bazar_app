@@ -11,6 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  dio: ^5.9.0
+  elegant_notification: ^2.5.1
+  flutter_screenutil: ^5.9.3
+  logger: ^2.6.2
 
 dev_dependencies:
   flutter_test:
