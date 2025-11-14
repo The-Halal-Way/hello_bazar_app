@@ -13,6 +13,46 @@ class MyDimens {
     ),
   ];
 
+  static const cmDivider = Divider(color: MyColor.gray300, thickness: .5);
+
+  AppBar getNormalAppBar(
+    String title,
+    List<Widget> actions,
+    BuildContext ctx, [
+    bool backButton = false,
+  ]) => AppBar(
+    leading: backButton
+        ? IconButton(
+            onPressed: () => Navigator.pop(ctx),
+            icon: const Icon(Icons.arrow_back_ios_new),
+          )
+        : const SizedBox(),
+    title: Text(title),
+    centerTitle: true,
+    actions: actions,
+  );
+
+  SliverAppBar getSliverAppbar(
+    String title,
+    List<Widget> actions,
+    BuildContext ctx, [
+    bool backButton = false,
+  ]) {
+    return SliverAppBar(
+      pinned: true,
+      automaticallyImplyLeading: false,
+      centerTitle: true,
+      leading: backButton
+          ? IconButton(
+              onPressed: () => Navigator.pop(ctx),
+              icon: const Icon(Icons.arrow_back_ios_new),
+            )
+          : const SizedBox(),
+      title: Text(title),
+      actions: actions,
+    );
+  }
+
   Padding getTitleAndViewAll(String title, BuildContext context) {
     return Padding(
       padding: EdgeInsetsGeometry.only(left: 12.w, right: 12.w, bottom: 5.h),

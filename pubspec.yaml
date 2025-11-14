@@ -15,6 +15,9 @@ dependencies:
   elegant_notification: ^2.5.1
   flutter_screenutil: ^5.9.3
   logger: ^2.6.2
+  file_picker: ^10.3.6
+  image_picker: ^1.2.1
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
