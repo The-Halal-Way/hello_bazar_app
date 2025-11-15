@@ -131,7 +131,7 @@ abstract class AppTheme {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(7.r)),
-        borderSide: BorderSide(color: MyColor.white, width: 1.0.w),
+        borderSide: BorderSide(color: MyColor.gray300, width: 1.0.w),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(7.r)),
