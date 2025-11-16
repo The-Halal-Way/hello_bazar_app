@@ -8,6 +8,28 @@ abstract class AppTheme {
   static final visualDensity = VisualDensity.adaptivePlatformDensity;
 
   static ThemeData light() => ThemeData(
+    // ///
+    // /// OLD transition
+    // pageTransitionsTheme: const PageTransitionsTheme(
+    //   builders: <TargetPlatform, PageTransitionsBuilder>{
+    //     TargetPlatform.android: ZoomPageTransitionsBuilder(),
+    //     TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+    //   },
+    // ),
+
+    // ///
+    // /// new transition
+    // pageTransitionsTheme: const PageTransitionsTheme(
+    //   builders: {
+    //     TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+    //     TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+    //   },
+    // ),
+
+    // ///
+    // ///
+    // /// Available : SlideTransition, FadeTransition, ScaleTransition, RotationTransition 
+
     visualDensity: visualDensity,
     primaryColor: MyColor.gray900,
     scaffoldBackgroundColor: MyColor.white,

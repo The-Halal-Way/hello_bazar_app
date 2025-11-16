@@ -16,11 +16,12 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       builder: (context, child) => MaterialApp(
-        title: 'Task 09',
+        title: 'Hello Bazar',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         home: Home(),
       ),
     );
   }
+ 
 }
