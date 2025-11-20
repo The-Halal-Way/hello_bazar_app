@@ -30,6 +30,7 @@ class MyDimens {
     title: Text(title),
     centerTitle: true,
     actions: actions,
+    backgroundColor: MyColor.primary,
   );
 
   SliverAppBar getSliverAppbar(
