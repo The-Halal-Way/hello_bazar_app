@@ -5,8 +5,8 @@ import 'package:hello_bazar/feature/dashboard/presentation/widget/dashboard_all_
 import 'package:hello_bazar/feature/dashboard/presentation/widget/dashboard_appbar.dart';
 import 'package:hello_bazar/feature/dashboard/presentation/widget/dashboard_recent_list.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

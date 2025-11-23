@@ -13,23 +13,26 @@ class HomeNavbarCartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: [
-        Positioned(
-          width: itemWidth * .8,
-          height: itemWidth * .8,
-          bottom: bottomHeight,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: MyColor.primary,
+    return SizedBox(
+      width: itemWidth,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            width: itemWidth * .8,
+            height: itemWidth * .8,
+            bottom: bottomHeight,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: MyColor.primary,
+              ),
+              child: Icon(Icons.add, color: MyColor.white, size: 24.w),
             ),
-            child: Icon(Icons.shopping_cart, color: MyColor.white, size: 24.w),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

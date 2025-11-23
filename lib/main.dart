@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/config/theme/app_theme.dart';
-import 'package:hello_bazar/feature/home/presentation/page/home.dart';
+import 'package:hello_bazar/feature/home/presentation/screen/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,10 +18,9 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => MaterialApp(
         title: 'Hello Bazar',
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.light(),
+        theme: AppTheme.light(context),
         home: Home(),
       ),
     );
   }
- 
 }

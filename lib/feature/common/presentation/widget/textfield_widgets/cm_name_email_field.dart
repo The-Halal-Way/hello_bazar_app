@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_bazar/core/constants/my_icon.dart';
 
 class CmNameEmailField extends StatelessWidget {
   const CmNameEmailField({
@@ -26,7 +27,7 @@ class CmNameEmailField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: label,
-        prefixIcon: icon == null ? null : Icon(icon),
+        prefixIcon: icon == null ? Image.asset(MyIcon.search1) : Icon(icon),
       ),
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
       validator: (value) {
@@ -43,8 +44,8 @@ class CmNameEmailField extends StatelessWidget {
         //   }
         // }
         // // validation for email address
-        // else 
-        
+        // else
+
         if (label.toLowerCase().contains('email')) {
           final haveDotCom = value!.trim().contains(".com");
           final haveDotOrg = value.trim().contains(".org");
