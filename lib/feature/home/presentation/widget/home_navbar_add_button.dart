@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 
-class HomeNavbarCartButton extends StatelessWidget {
-  const HomeNavbarCartButton({
+class HomeNavbarAddButton extends StatelessWidget {
+  const HomeNavbarAddButton({
     super.key,
     required this.itemWidth,
     required this.bottomHeight,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 import 'package:hello_bazar/core/constants/my_icon.dart';
 import 'package:hello_bazar/core/constants/my_image.dart';
@@ -13,7 +12,7 @@ class DashboardAppbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(16.0, 20.h, 16.0, 16.0),
-        color: MyColor.primary,
+      color: MyColor.primary,
       child: SafeArea(
         child: Form(
           child: Column(
@@ -34,19 +33,13 @@ class DashboardAppbar extends StatelessWidget {
                         // top texts
                         Text(
                           "Hello Jb",
-                          style: GoogleFonts.lora(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: MyColor.white,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium!
+                              .copyWith(fontWeight: FontWeight.bold),
                         ),
                         Text(
                           "Mobile App Developer",
-                          style: GoogleFonts.oswald(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: MyColor.white,
-                          ),
+                          style: Theme.of(context).textTheme.titleSmall!
+                              .copyWith(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
