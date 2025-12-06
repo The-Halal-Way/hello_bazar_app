@@ -10,24 +10,22 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          DashboardAppbar(),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(12.h),
-              child: Column(
-                children: [
-                  DashboardRecentList(),
-                  SizedBox(height: 16.0),
-                  DashboardAllUserList(),
-                ],
-              ),
+    return Column(
+      children: [
+        DashboardAppbar(),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(12.h),
+            child: Column(
+              children: [
+                DashboardRecentList(),
+                SizedBox(height: 16.0),
+                DashboardAllUserList(),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
