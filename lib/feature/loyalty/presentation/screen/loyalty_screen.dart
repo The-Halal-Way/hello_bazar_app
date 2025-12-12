@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 import 'package:hello_bazar/core/util/my_dimens.dart';
+import 'package:hello_bazar/feature/loyalty/presentation/screen/loyalty_add_screen.dart';
 
 class LoyaltyScreen extends StatelessWidget {
   const LoyaltyScreen({super.key});
@@ -14,7 +15,12 @@ class LoyaltyScreen extends StatelessWidget {
         MyDimens().getNormalAppBar("Loyalty", [
           IconButton(
             icon: Icon(Icons.add, size: 20.w),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => LoyaltyAddScreen()),
+              );
+            },
           ),
           const SizedBox(width: 8),
         ], context),
@@ -23,14 +29,16 @@ class LoyaltyScreen extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(12.w),
               child: Column(
-                crossAxisAlignment: .start,
-                spacing: 24.h,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 20.h,
                 children: [
-                  // Welcome Banner
-                  _buildWelcomeBanner(context),
-                  // Statistics Cards
-                  _buildStatisticsGrid(context),
-                  // Recent Transactions
+                  // Quick Stats Summary (Compact)
+                  _buildQuickSummary(context),
+
+                  // Points Overview Cards (2 cards only)
+                  _buildPointsOverview(context),
+
+                  // Recent Transactions List
                   _buildTransactionList(context),
                 ],
               ),
@@ -41,158 +49,85 @@ class LoyaltyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeBanner(BuildContext context) {
+  Widget _buildQuickSummary(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [MyColor.primary, MyColor.primary.withOpacity(0.8)],
+          colors: [MyColor.primary, MyColor.primary.withOpacity(0.85)],
         ),
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: MyColor.primary.withOpacity(0.2),
-            blurRadius: 20.w,
-            offset: Offset(0.w, 8.h),
+            color: MyColor.primary.withOpacity(0.25),
+            blurRadius: 15.w,
+            offset: Offset(0.w, 6.h),
           ),
         ],
       ),
-      child: Stack(
-        clipBehavior: Clip.none,
+      child: Row(
         children: [
-          Positioned(
-            right: -20,
-            top: -20,
-            child: Container(
-              width: 150.w,
-              height: 150.h,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
+          Container(
+            width: 60.w,
+            height: 60.h,
+            decoration: BoxDecoration(
+              color: MyColor.white.withOpacity(0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.workspace_premium,
+              color: MyColor.white,
+              size: 32.w,
             ),
           ),
-          Positioned(
-            left: -30,
-            bottom: -30,
-            child: Container(
-              width: 120.w,
-              height: 120.h,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 28.h),
-      
+          SizedBox(width: 16.w),
+          Expanded(
             child: Column(
-              crossAxisAlignment: .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Text(
-                            'Welcome Back! 👋',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: MyColor.onPrimary,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                          ),
-                          SizedBox(height: 8.h),
-                          Text(
-                            'Your loyalty points are growing fast!',
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  color: MyColor.onPrimary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 80.w,
-                      height: 80.h,
-                      decoration: BoxDecoration(
-                        color: MyColor.white.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.workspace_premium,
-                        color: MyColor.white,
-                        size: 40.w,
-                      ),
-                    ),
-                  ],
+                Text(
+                  'Total Active Points',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: MyColor.onPrimary.withOpacity(0.9),
+                  ),
                 ),
-            
-                SizedBox(height: 16.h),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  clipBehavior: Clip.none,
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 8.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: MyColor.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.star, color: MyColor.white, size: 18.w),
-                            SizedBox(width: 8.w),
-                            Text(
-                              '2,450 Points',
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: MyColor.onPrimary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 12.w),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 8.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: MyColor.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.trending_up,
-                              color: MyColor.white,
-                              size: 18.w,
-                            ),
-                            SizedBox(width: 8.w),
-                            Text(
-                              '+12% Today',
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: MyColor.onPrimary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                SizedBox(height: 6.h),
+                Text(
+                  '2,450 Points',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: MyColor.onPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22.sp,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  '42 active members',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: MyColor.onPrimary.withOpacity(0.85),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+            decoration: BoxDecoration(
+              color: MyColor.success.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(20.r),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.trending_up, color: MyColor.white, size: 16.w),
+                SizedBox(width: 4.w),
+                Text(
+                  '+12%',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: MyColor.onPrimary,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -203,139 +138,93 @@ class LoyaltyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatisticsGrid(BuildContext context) {
-    final statistics = [
-      {
-        'title': 'Total Sales',
-        'value': '৳ 12,450',
-        'icon': Icons.shopping_cart_outlined,
-        'color': MyColor.primary,
-        'trend': '+12.5%',
-        'trendColor': MyColor.success,
-        'subtitle': 'Today\'s revenue',
-      },
-      {
-        'title': 'Loyalty Points',
-        'value': '2,450',
-        'icon': Icons.star_outline,
-        'color': MyColor.warning,
-        'trend': '+8.2%',
-        'trendColor': MyColor.success,
-        'subtitle': 'Active points',
-      },
-      {
-        'title': 'New Members',
-        'value': '42',
-        'icon': Icons.person_add_outlined,
-        'color': MyColor.success,
-        'trend': '+15.3%',
-        'trendColor': MyColor.success,
-        'subtitle': 'This month',
-      },
-      {
-        'title': 'Avg. Order',
-        'value': '৳ 1,240',
-        'icon': Icons.trending_up_outlined,
-        'color': MyColor.error,
-        'trend': '-3.2%',
-        'trendColor': MyColor.error,
-        'subtitle': 'Per customer',
-      },
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildPointsOverview(BuildContext context) {
+    return Row(
       children: [
-        Text(
-          'Daily Statistics',
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-        ),
-        SizedBox(height: 12.h),
-        GridView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 16.h,
-            crossAxisSpacing: 16.w,
-            childAspectRatio: 1.2,
+        Expanded(
+          child: _buildPointsCard(
+            context: context,
+            title: 'Points Earned',
+            value: '+1,240',
+            subtitle: 'Today',
+            icon: Icons.arrow_upward,
+            color: MyColor.success,
           ),
-          itemCount: statistics.length,
-          itemBuilder: (context, index) {
-            final stat = statistics[index];
-            return _buildStatCard(context, stat);
-          },
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: _buildPointsCard(
+            context: context,
+            title: 'Points Redeemed',
+            value: '-580',
+            subtitle: 'Today',
+            icon: Icons.arrow_downward,
+            color: MyColor.error,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildStatCard(BuildContext context, Map<String, dynamic> stat) {
+  Widget _buildPointsCard({
+    required BuildContext context,
+    required String title,
+    required String value,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+  }) {
     return Container(
       padding: EdgeInsets.all(16.w),
-      decoration: MyDimens.getBoxDecoration,
-      child: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
-                    color: stat['color'].withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Icon(stat['icon'], color: stat['color'], size: 20.w),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                  decoration: BoxDecoration(
-                    color: stat['trendColor'].withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Text(
-                    stat['trend'],
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: stat['trendColor'],
-                      fontWeight: FontWeight.w600,
-                      fontSize: 10.sp,
-                    ),
-                  ),
-                ),
-              ],
+      decoration: BoxDecoration(
+        color: MyColor.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: MyColor.outlineVariant, width: 1.w),
+        boxShadow: [
+          BoxShadow(
+            color: MyColor.gray200.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.all(8.w),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8.r),
             ),
-            SizedBox(height: 8.h),
-            Text(
-              stat['value'],
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                fontSize: 18.sp,
-              ),
+            child: Icon(icon, color: color, size: 20.w),
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.sp,
+              color: color,
             ),
-            Text(
-              stat['title'],
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 14.sp,
-              ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w500,
+              fontSize: 13.sp,
             ),
-            SizedBox(height: 4.h),
-            Text(
-              stat['subtitle'],
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontSize: 10.sp,
-              ),
+          ),
+          SizedBox(height: 2.h),
+          Text(
+            subtitle,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: MyColor.gray500,
+              fontSize: 11.sp,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -382,6 +271,14 @@ class LoyaltyScreen extends StatelessWidget {
         'type': 'redeemed',
         'icon': Icons.coffee_outlined,
       },
+      {
+        'customer': 'Emma Davis',
+        'points': '+90',
+        'amount': '৳ 1,400',
+        'time': '05:00 PM',
+        'type': 'earned',
+        'icon': Icons.shopping_cart_outlined,
+      },
     ];
 
     return Column(
@@ -392,9 +289,7 @@ class LoyaltyScreen extends StatelessWidget {
           children: [
             Text(
               'Recent Transactions',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             TextButton(
               onPressed: () {},
@@ -407,19 +302,28 @@ class LoyaltyScreen extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 8.h),
         Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+            color: MyColor.surfaceContainerLowest,
             borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: MyColor.outlineVariant, width: 1.w),
+            boxShadow: [
+              BoxShadow(
+                color: MyColor.gray200.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
             itemCount: transactions.length,
             separatorBuilder: (context, index) => Divider(
               height: 1.h,
-              color: Theme.of(context).dividerTheme.color,
+              color: MyColor.outlineVariant,
               indent: 16.w,
               endIndent: 16.w,
             ),
@@ -439,84 +343,102 @@ class LoyaltyScreen extends StatelessWidget {
   ) {
     final isEarned = transaction['type'] == 'earned';
 
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      leading: Container(
-        width: 40.w,
-        height: 40.h,
-        decoration: BoxDecoration(
-          color: isEarned
-              ? MyColor.success.withOpacity(0.1)
-              : MyColor.error.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(10.r),
-        ),
-        child: Icon(
-          transaction['icon'],
-          color: isEarned ? MyColor.success : MyColor.error,
-          size: 20.w,
-        ),
-      ),
-      title: Text(
-        transaction['customer'],
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-          fontSize: 14.sp,
-        ),
-      ),
-      subtitle: Text(
-        transaction['time'],
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12.sp),
-      ),
-      trailing: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      child: Row(
         children: [
-          Text(
-            transaction['points'],
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          Container(
+            width: 44.w,
+            height: 44.h,
+            decoration: BoxDecoration(
+              color: isEarned
+                  ? MyColor.success.withOpacity(0.1)
+                  : MyColor.error.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Icon(
+              transaction['icon'],
               color: isEarned ? MyColor.success : MyColor.error,
-              fontWeight: FontWeight.w600,
-              fontSize: 14.sp,
+              size: 22.w,
             ),
           ),
-          SizedBox(height: 4.h),
-          Text(
-            transaction['amount'],
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(fontSize: 12.sp),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  transaction['customer'],
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.sp,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    Text(
+                      transaction['amount'],
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: MyColor.gray600,
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Container(
+                      width: 3.w,
+                      height: 3.h,
+                      decoration: BoxDecoration(
+                        color: MyColor.gray400,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      transaction['time'],
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: MyColor.gray500,
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                transaction['points'],
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: isEarned ? MyColor.success : MyColor.error,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.sp,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                decoration: BoxDecoration(
+                  color: isEarned
+                      ? MyColor.success.withOpacity(0.1)
+                      : MyColor.error.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  isEarned ? 'Earned' : 'Redeemed',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: isEarned ? MyColor.success : MyColor.error,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10.sp,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 }
-
-// Add this to your main app or navigation
-// Example usage:
-// Navigator.push(context, MaterialPageRoute(builder: (_) => const LoyaltyScreen()));
-
-// class LoyaltyScreen extends StatelessWidget {
-//   const LoyaltyScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         LoyaltyAppbar(),
-//         Expanded(
-//           child: SingleChildScrollView(
-//             padding: EdgeInsets.all(12.h),
-//             child: Column(
-//               children: [
-//                 LoyaltyRecentList(),
-//                 SizedBox(height: 16.0),
-//                 LoyaltyAllUserList(),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }

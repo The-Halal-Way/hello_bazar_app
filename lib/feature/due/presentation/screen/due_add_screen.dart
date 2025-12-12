@@ -1,31 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
-import 'package:hello_bazar/feature/loyalty/presentation/widget/loyalty_add_widgets/loyalty_add_summary_details.dart';
 
-class LoyaltyAddScreen extends StatefulWidget {
-  const LoyaltyAddScreen({super.key});
+
+class AddDueScreen extends StatefulWidget {
+  const AddDueScreen({super.key});
   @override
-  State<LoyaltyAddScreen> createState() => _LoyaltyAddScreenState();
+  State<AddDueScreen> createState() => _AddDueScreenState();
 }
 
-class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
+class _AddDueScreenState extends State<AddDueScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _numberController = TextEditingController();
-  final _totalController = TextEditingController();
-  final _loyaltyController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _amountController = TextEditingController();
+  final _notesController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _numberController.addListener(_updateUI);
-    _totalController.addListener(_updateUI);
-    _loyaltyController.addListener(_updateUI);
-  }
-
-  void _updateUI() {
-    if (mounted) setState(() {});
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _amountController.dispose();
+    _notesController.dispose();
+    super.dispose();
   }
 
   @override
@@ -38,10 +35,7 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
           icon: Icon(Icons.arrow_back, color: MyColor.onSurfaceVariant),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          "Add User Loyalty",
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        title: Text('Add Due', style: Theme.of(context).textTheme.titleLarge),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -89,7 +83,7 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'New Loyalty Entry',
+                              'New Due Entry',
                               style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
@@ -105,7 +99,9 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
                     ],
                   ),
                 ),
+
                 SizedBox(height: 24.h),
+
                 // Customer Information Section
                 Text(
                   'Customer Information',
@@ -114,6 +110,7 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
                   ),
                 ),
                 SizedBox(height: 16.h),
+
                 // Name Field
                 Text(
                   'Full Name *',
@@ -135,7 +132,9 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
                     return null;
                   },
                 ),
+
                 SizedBox(height: 16.h),
+
                 // Phone Field
                 Text(
                   'Phone Number *',
@@ -145,7 +144,7 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
-                  controller: _numberController,
+                  controller: _phoneController,
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     hintText: '+880 XXXX-XXXXXX',
@@ -158,25 +157,28 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
                     return null;
                   },
                 ),
+
                 SizedBox(height: 24.h),
+
                 // Due Details Section
                 Text(
-                  'Amount Details',
+                  'Due Details',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 16.h),
+
                 // Amount Field
                 Text(
-                  'Total Amount (৳) *',
+                  'Due Amount (৳) *',
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
-                  controller: _totalController,
+                  controller: _amountController,
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     hintText: '0.00',
@@ -192,14 +194,31 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
                     return null;
                   },
                 ),
+
                 SizedBox(height: 16.h),
-                // summary
-                LoyaltyAddSummaryDetails(
-                  loyaltyController: _loyaltyController,
-                  getSubTotal: _getSubTotal,
-                  getGrandTotal: _getGrandTotal,
+
+                // Notes Field
+                Text(
+                  'Notes (Optional)',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
+                SizedBox(height: 8.h),
+                TextFormField(
+                  controller: _notesController,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    hintText: 'Add any additional notes...',
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(bottom: 60.h),
+                      child: Icon(Icons.note_outlined),
+                    ),
+                  ),
+                ),
+
                 SizedBox(height: 32.h),
+
                 // Action Buttons
                 Row(
                   children: [
@@ -232,7 +251,7 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
                             // Handle save logic here
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Loyalty added successfully!'),
+                                content: Text('Due added successfully!'),
                                 backgroundColor: MyColor.success,
                               ),
                             );
@@ -256,7 +275,7 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
                             ),
                             SizedBox(width: 8.w),
                             Text(
-                              'Save All',
+                              'Save Due',
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(
                                     color: MyColor.onPrimary,
@@ -277,28 +296,5 @@ class _LoyaltyAddScreenState extends State<LoyaltyAddScreen> {
         ),
       ),
     );
-  }
-
-  String get _getSubTotal {
-    final total = double.tryParse(_totalController.text.trim()) ?? 0.0;
-    return total.toStringAsFixed(2);
-  }
-
-  String get _getGrandTotal {
-    final total = double.tryParse(_totalController.text.trim()) ?? 0.0;
-    final loyalty = double.tryParse(_loyaltyController.text.trim()) ?? 0.0;
-    final grandTotal = total - loyalty;
-    return grandTotal.toStringAsFixed(2);
-  }
-
-  @override
-  void dispose() {
-    _numberController.removeListener(_updateUI);
-    _totalController.removeListener(_updateUI);
-    _loyaltyController.removeListener(_updateUI);
-    _numberController.dispose();
-    _totalController.dispose();
-    _loyaltyController.dispose();
-    super.dispose();
   }
 }

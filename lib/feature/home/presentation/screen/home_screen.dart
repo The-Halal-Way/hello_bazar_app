@@ -29,7 +29,6 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   _buildBanner(context),
                   SizedBox(height: 30.h),
-
                   Text(
                     'Today\'s Overview',
                     style: Theme.of(context).textTheme.titleLarge,
@@ -52,7 +51,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildBanner(BuildContext context) {
     return Container(
-      height: 160.h,
+      //   height: 160.h,
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -143,50 +142,54 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildStatsGrid(BuildContext context) {
-    return GridView.count(
-      shrinkWrap: true,
-      padding: EdgeInsets.zero,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      mainAxisSpacing: 16.h,
-      crossAxisSpacing: 16.w,
-      childAspectRatio: 1.4,
+    return Column(
       children: [
-        _buildStatCard(
-          context: context,
-          title: 'Total Sales',
-          value: '৳ 12,458',
-          icon: Icons.shopping_bag_outlined,
-          color: MyColor.success,
-          percentage: '+8.2%',
-          isPositive: true,
-        ),
-        _buildStatCard(
-          context: context,
-          title: 'Orders',
-          value: '342',
-          icon: Icons.receipt_long_outlined,
-          color: const Color(0xFF0984E3),
-          percentage: '+5.1%',
-          isPositive: true,
-        ),
-        _buildStatCard(
-          context: context,
-          title: 'Customers',
-          value: '1,256',
-          icon: Icons.people_outline,
-          color: MyColor.warning,
-          percentage: '+12.3%',
-          isPositive: true,
-        ),
-        _buildStatCard(
-          context: context,
-          title: 'Revenue',
-          value: '৳ 8,942',
-          icon: Icons.trending_up_outlined,
-          color: MyColor.error,
-          percentage: '-2.4%',
-          isPositive: false,
+        GridView.count(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          mainAxisSpacing: 16.h,
+          crossAxisSpacing: 16.w,
+          childAspectRatio: 1.4,
+          children: [
+            _buildStatCard(
+              context: context,
+              title: 'Total Sales',
+              value: '৳ 12,458',
+              icon: Icons.shopping_bag_outlined,
+              color: MyColor.success,
+              percentage: '+8.2%',
+              isPositive: true,
+            ),
+            _buildStatCard(
+              context: context,
+              title: 'Orders',
+              value: '342',
+              icon: Icons.receipt_long_outlined,
+              color: const Color(0xFF0984E3),
+              percentage: '+5.1%',
+              isPositive: true,
+            ),
+            _buildStatCard(
+              context: context,
+              title: 'Customers',
+              value: '1,256',
+              icon: Icons.people_outline,
+              color: MyColor.warning,
+              percentage: '+12.3%',
+              isPositive: true,
+            ),
+            _buildStatCard(
+              context: context,
+              title: 'Revenue',
+              value: '৳ 8,942',
+              icon: Icons.trending_up_outlined,
+              color: MyColor.error,
+              percentage: '-2.4%',
+              isPositive: false,
+            ),
+          ],
         ),
       ],
     );

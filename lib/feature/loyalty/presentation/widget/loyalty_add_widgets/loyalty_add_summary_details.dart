@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/core/util/my_dimens.dart';
-import 'package:hello_bazar/feature/loyalty/presentation/screen/loyalty_add_screen.dart';
+import 'package:hello_bazar/feature/common/presentation/widget/textfield_widgets/cm_number_field.dart';
 
 class LoyaltyAddSummaryDetails extends StatelessWidget {
   const LoyaltyAddSummaryDetails({
@@ -45,7 +45,6 @@ class LoyaltyAddSummaryDetails extends StatelessWidget {
                   child: CmNumberField(
                     controller: loyaltyController,
                     label: "৳ 0.00",
-                    keyboardType: TextInputType.number,
                   ),
                 ),
               ],
