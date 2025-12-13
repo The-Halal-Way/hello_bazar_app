@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 import 'package:hello_bazar/core/constants/my_constants.dart';
+import 'package:hello_bazar/feature/home/presentation/widget/home_navbar_add_button.dart';
 
 class HomeNavbar extends StatelessWidget {
   const HomeNavbar({
@@ -26,10 +27,10 @@ class HomeNavbar extends StatelessWidget {
           // message icon
           _getNavBarItem(index: 1, width: itemWidth),
           // // cart icon button
-          // HomeNavbarAddButton(
-          //   itemWidth: itemWidth,
-          //   bottomHeight: navBarHeight / 2,
-          // ),
+          HomeNavbarAddButton(
+            itemWidth: itemWidth,
+            bottomHeight: navBarHeight / 2,
+          ),
 
           // file icon
           _getNavBarItem(index: 2, width: itemWidth),
