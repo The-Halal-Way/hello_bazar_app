@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 import 'package:hello_bazar/core/util/my_dimens.dart';
+import 'package:hello_bazar/feature/due/data/model/due_user.dart';
 import 'package:hello_bazar/feature/due/presentation/screen/due_add_screen.dart';
+import 'package:hello_bazar/feature/due/presentation/screen/due_user_details_screen.dart';
 
 class DueScreen extends StatefulWidget {
   const DueScreen({super.key});
@@ -74,7 +76,7 @@ class _DueScreenState extends State<DueScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const AddDueScreen()),
+                MaterialPageRoute(builder: (context) => const DueAddScreen()),
               );
             },
           ),
@@ -229,120 +231,131 @@ class _DueScreenState extends State<DueScreen> {
   }
 
   Widget _buildDueUserCard(DueUser user) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: MyColor.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: MyColor.outlineVariant, width: 1.w),
-        boxShadow: [
-          BoxShadow(
-            color: MyColor.gray200.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 48.w,
-                height: 48.h,
-                decoration: BoxDecoration(
-                  color: MyColor.primaryFixed,
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Center(
-                  child: Text(
-                    user.name.split(' ').map((e) => e[0]).take(2).join(),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: MyColor.primary,
-                      fontWeight: FontWeight.bold,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => DueUserDetailsScreen(user: user)),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          color: MyColor.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: MyColor.outlineVariant, width: 1.w),
+          boxShadow: [
+            BoxShadow(
+              color: MyColor.gray200.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 48.w,
+                  height: 48.h,
+                  decoration: BoxDecoration(
+                    color: MyColor.primaryFixed,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Center(
+                    child: Text(
+                      user.name.split(' ').map((e) => e[0]).take(2).join(),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: MyColor.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user.name,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 4.h),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.phone,
+                            size: 14.sp,
+                            color: MyColor.gray500,
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            user.phone,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: MyColor.gray500),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      user.name,
+                      '৳${user.dueAmount.toStringAsFixed(2)}',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
+                        color: MyColor.error,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     SizedBox(height: 4.h),
-                    Row(
-                      children: [
-                        Icon(Icons.phone, size: 14.sp, color: MyColor.gray500),
-                        SizedBox(width: 4.w),
-                        Text(
-                          user.phone,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: MyColor.gray500),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 2.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: MyColor.error.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Text(
+                        'Due',
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: MyColor.error,
+                          fontWeight: FontWeight.w600,
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '৳${user.dueAmount.toStringAsFixed(2)}',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: MyColor.error,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 2.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: MyColor.error.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Text(
-                      'Due',
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: MyColor.error,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          Divider(height: 1.h, color: MyColor.outlineVariant),
-          SizedBox(height: 12.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildInfoChip(
-                icon: Icons.shopping_cart,
-                label: '${user.totalPurchases} purchases',
-                color: MyColor.primary,
-              ),
-              _buildInfoChip(
-                icon: Icons.access_time,
-                label: user.lastPurchase,
-                color: MyColor.gray600,
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+            SizedBox(height: 12.h),
+            Divider(height: 1.h, color: MyColor.outlineVariant),
+            SizedBox(height: 12.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildInfoChip(
+                  icon: Icons.shopping_cart,
+                  label: '${user.totalPurchases} purchases',
+                  color: MyColor.primary,
+                ),
+                _buildInfoChip(
+                  icon: Icons.access_time,
+                  label: user.lastPurchase,
+                  color: MyColor.gray600,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -366,21 +379,4 @@ class _DueScreenState extends State<DueScreen> {
       ],
     );
   }
-}
-
-// Due User Model
-class DueUser {
-  final String name;
-  final String phone;
-  final double dueAmount;
-  final String lastPurchase;
-  final int totalPurchases;
-
-  DueUser({
-    required this.name,
-    required this.phone,
-    required this.dueAmount,
-    required this.lastPurchase,
-    required this.totalPurchases,
-  });
 }

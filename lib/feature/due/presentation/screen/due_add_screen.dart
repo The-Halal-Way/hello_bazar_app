@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 
 
-class AddDueScreen extends StatefulWidget {
-  const AddDueScreen({super.key});
+class DueAddScreen extends StatefulWidget {
+  const DueAddScreen({super.key});
   @override
-  State<AddDueScreen> createState() => _AddDueScreenState();
+  State<DueAddScreen> createState() => _DueAddScreenState();
 }
 
-class _AddDueScreenState extends State<AddDueScreen> {
+class _DueAddScreenState extends State<DueAddScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
