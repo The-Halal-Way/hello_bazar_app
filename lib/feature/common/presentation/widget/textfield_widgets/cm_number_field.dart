@@ -10,6 +10,7 @@ class CmNumberField extends StatelessWidget {
     this.readOnly = false,
     this.maxLines = 1,
     this.prefixIcon,
+    this.onlyTextField = false,
   });
   final TextEditingController controller;
   final String hintText;
@@ -17,19 +18,22 @@ class CmNumberField extends StatelessWidget {
   final bool readOnly;
   final int maxLines;
   final Widget? prefixIcon;
+  final bool onlyTextField;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-        ),
-        SizedBox(height: 8.h),
+        if (onlyTextField == false) ...[
+          Text(
+            label,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          SizedBox(height: 8.h),
+        ],
         TextFormField(
           controller: controller,
           textInputAction: TextInputAction.done,

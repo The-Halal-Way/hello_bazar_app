@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 import 'package:hello_bazar/core/util/my_dimens.dart';
-import 'package:hello_bazar/feature/loyalty/presentation/screen/loyalty_add_screen.dart';
+import 'package:hello_bazar/feature/sales/presentation/screen/sales_add_screen.dart';
 
 class LoyaltyScreen extends StatelessWidget {
   const LoyaltyScreen({super.key});
@@ -18,7 +18,7 @@ class LoyaltyScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => LoyaltyAddScreen()),
+                MaterialPageRoute(builder: (_) => SalesAddScreen()),
               );
             },
           ),

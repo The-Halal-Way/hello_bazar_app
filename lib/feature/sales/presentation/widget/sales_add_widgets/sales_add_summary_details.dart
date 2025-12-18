@@ -44,7 +44,8 @@ class LoyaltyAddSummaryDetails extends StatelessWidget {
                   width: 120.w,
                   child: CmNumberField(
                     controller: loyaltyController,
-                    label: "৳ 0.00",
+                    onlyTextField: true,
+                    hintText: "৳ 0.00",
                   ),
                 ),
               ],

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 import 'package:hello_bazar/core/util/my_dimens.dart';
+import 'package:hello_bazar/feature/customer/presentation/screen/customer_screen.dart';
+import 'package:hello_bazar/feature/sales/presentation/screen/sales_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -153,14 +155,22 @@ class HomeScreen extends StatelessWidget {
           crossAxisSpacing: 16.w,
           childAspectRatio: 1.4,
           children: [
-            _buildStatCard(
-              context: context,
-              title: 'Total Sales',
-              value: '৳ 12,458',
-              icon: Icons.shopping_bag_outlined,
-              color: MyColor.success,
-              percentage: '+8.2%',
-              isPositive: true,
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SalesScreen()),
+                );
+              },
+              child: _buildStatCard(
+                context: context,
+                title: 'Total Sales',
+                value: '৳ 12,458',
+                icon: Icons.shopping_bag_outlined,
+                color: MyColor.success,
+                percentage: '+8.2%',
+                isPositive: true,
+              ),
             ),
             _buildStatCard(
               context: context,
@@ -171,14 +181,22 @@ class HomeScreen extends StatelessWidget {
               percentage: '+5.1%',
               isPositive: true,
             ),
-            _buildStatCard(
-              context: context,
-              title: 'Customers',
-              value: '1,256',
-              icon: Icons.people_outline,
-              color: MyColor.warning,
-              percentage: '+12.3%',
-              isPositive: true,
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => CustomerScreen()),
+                );
+              },
+              child: _buildStatCard(
+                context: context,
+                title: 'Customers',
+                value: '1,256',
+                icon: Icons.people_outline,
+                color: MyColor.warning,
+                percentage: '+12.3%',
+                isPositive: true,
+              ),
             ),
             _buildStatCard(
               context: context,

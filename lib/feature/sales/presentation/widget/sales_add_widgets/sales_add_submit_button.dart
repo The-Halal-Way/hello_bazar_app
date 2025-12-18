@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class LoyaltyAddSubmitButton extends StatelessWidget {
-  const LoyaltyAddSubmitButton({
+class SalesAddSubmitButton extends StatelessWidget {
+  const SalesAddSubmitButton({
     super.key,
     required this.numberController,
     required this.totalController,

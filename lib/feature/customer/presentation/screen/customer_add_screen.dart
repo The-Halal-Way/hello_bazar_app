@@ -5,14 +5,13 @@ import 'package:hello_bazar/feature/common/data/model/cm_user.dart';
 import 'package:hello_bazar/feature/common/presentation/widget/textfield_widgets/cm_name_email_field.dart';
 import 'package:hello_bazar/feature/common/presentation/widget/textfield_widgets/cm_number_field.dart';
 
-class CmAddUserScreen extends StatefulWidget {
-  const CmAddUserScreen({super.key});
-
+class CustomerAddScreen extends StatefulWidget {
+  const CustomerAddScreen({super.key});
   @override
-  State<CmAddUserScreen> createState() => _CmAddUserScreenState();
+  State<CustomerAddScreen> createState() => _CustomerAddScreenState();
 }
 
-class _CmAddUserScreenState extends State<CmAddUserScreen> {
+class _CustomerAddScreenState extends State<CustomerAddScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
