@@ -4,6 +4,7 @@ import 'package:hello_bazar/core/constants/my_color.dart';
 import 'package:hello_bazar/core/util/my_dimens.dart';
 import 'package:hello_bazar/feature/customer/presentation/screen/customer_screen.dart';
 import 'package:hello_bazar/feature/ledger/presentation/screen/ledger_screen.dart';
+import 'package:hello_bazar/feature/profit_loss/presentation/screen/profit_loss_screen.dart';
 import 'package:hello_bazar/feature/sales/presentation/screen/sales_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -173,14 +174,22 @@ class HomeScreen extends StatelessWidget {
                 isPositive: true,
               ),
             ),
-            _buildStatCard(
-              context: context,
-              title: 'Orders',
-              value: '342',
-              icon: Icons.receipt_long_outlined,
-              color: const Color(0xFF0984E3),
-              percentage: '+5.1%',
-              isPositive: true,
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => ProfitLossScreen()),
+                );
+              },
+              child: _buildStatCard(
+                context: context,
+                title: 'Orders',
+                value: '342',
+                icon: Icons.receipt_long_outlined,
+                color: const Color(0xFF0984E3),
+                percentage: '+5.1%',
+                isPositive: true,
+              ),
             ),
             InkWell(
               onTap: () {
