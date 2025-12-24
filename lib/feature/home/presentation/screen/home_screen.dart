@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hello_bazar/config/theme/app_theme.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 import 'package:hello_bazar/core/util/my_dimens.dart';
 import 'package:hello_bazar/feature/customer/presentation/screen/customer_screen.dart';
@@ -35,19 +36,14 @@ class HomeScreen extends StatelessWidget {
               padding: EdgeInsets.all(11.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 24.h,
                 children: [
                   // Welcome Banner
                   _buildBanner(context),
-                  SizedBox(height: 24.h),
-
                   // Statistics Overview
                   _buildStatisticsOverview(context),
-                  SizedBox(height: 24.h),
-
                   // Quick Access Categories
                   _buildCategoriesGrid(context),
-                  SizedBox(height: 24.h),
-
                   // Recent Activity
                   _buildRecentActivity(context),
                 ],
@@ -60,6 +56,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildBanner(BuildContext context) {
+    final isMobile = AppTheme.isMobile(context);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -104,7 +101,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(24.w),
+            padding: EdgeInsets.all(isMobile ? 24.w : .13.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -161,6 +158,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildStatisticsOverview(BuildContext context) {
+    final isMobile = AppTheme.isMobile(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -176,7 +174,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisCount: 2,
           mainAxisSpacing: 12.h,
           crossAxisSpacing: 12.w,
-          childAspectRatio: 1.4,
+          childAspectRatio: isMobile ? 1.4 : 1.8,
           children: [
             _buildStatCard(
               context: context,
@@ -221,6 +219,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildCategoriesGrid(BuildContext context) {
+    final isMobile = AppTheme.isMobile(context);
     final categories = [
       {
         'title': 'Product',
@@ -277,7 +276,6 @@ class HomeScreen extends StatelessWidget {
         'screen': WarehouseScreen(),
       },
     ];
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -301,7 +299,7 @@ class HomeScreen extends StatelessWidget {
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+            crossAxisCount: isMobile ? 3 : 4,
             mainAxisSpacing: 12.h,
             crossAxisSpacing: 12.w,
             childAspectRatio: 0.9,
@@ -338,8 +336,9 @@ class HomeScreen extends StatelessWidget {
     required String trend,
     required bool isPositive,
   }) {
+    final isMobile = AppTheme.isMobile(context);
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(isMobile ? 16.w : 12.w),
       decoration: BoxDecoration(
         color: MyColor.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(12.r),
@@ -396,16 +395,16 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
 
-          // Column(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
           SizedBox(height: 8.h),
           Expanded(
-            child: Text(
-              value,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                value,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           Text(
@@ -413,8 +412,6 @@ class HomeScreen extends StatelessWidget {
             style: Theme.of(
               context,
             ).textTheme.bodySmall?.copyWith(color: MyColor.gray500),
-            //   ),
-            // ],
           ),
         ],
       ),

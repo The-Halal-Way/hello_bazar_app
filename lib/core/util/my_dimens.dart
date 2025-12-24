@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hello_bazar/config/theme/app_theme.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 
 class MyDimens {
+  static const cmDivider = Divider(color: MyColor.gray300, thickness: .5);
+
   Center getDemoPage(String title) => Center(child: Text(title));
 
   static List<BoxShadow> get getShadow => [
@@ -26,26 +29,51 @@ class MyDimens {
     ],
   );
 
-  static const cmDivider = Divider(color: MyColor.gray300, thickness: .5);
+  static Center get getLoadingIndication =>
+      const Center(child: CircularProgressIndicator());
+
+  static Center get getNoItemText => const Center(
+    child: SizedBox(
+      height: 800,
+      width: 80,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.inbox, size: 80, color: Colors.grey),
+            SizedBox(height: 16),
+            Text(
+              'No data found..',
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 
   AppBar getNormalAppBar(
     String title,
     List<Widget> actions,
     BuildContext ctx, [
     bool backButton = false,
-  ]) => AppBar(
-    leading: backButton
-        ? IconButton(
-            onPressed: () => Navigator.pop(ctx),
-            icon: const Icon(Icons.arrow_back_ios_new),
-          )
-        : null,
-    title: Text(title),
-    automaticallyImplyLeading: false,
-    //centerTitle: true,
-    actions: actions,
-    backgroundColor: MyColor.primary,
-  );
+  ]) {
+    return AppBar(
+      leading: backButton
+          ? IconButton(
+              onPressed: () => Navigator.pop(ctx),
+              icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+            )
+          : null,
+      title: Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+      ),
+      automaticallyImplyLeading: false,
+      actions: actions,
+      iconTheme: IconThemeData(color: Colors.white),
+    );
+  }
 
   SliverAppBar getSliverAppbar(
     String title,
@@ -56,15 +84,28 @@ class MyDimens {
     return SliverAppBar(
       pinned: true,
       automaticallyImplyLeading: false,
-      centerTitle: true,
+      centerTitle: AppTheme.isTablet(ctx) ? true : false,
       leading: backButton
           ? IconButton(
               onPressed: () => Navigator.pop(ctx),
-              icon: const Icon(Icons.arrow_back_ios_new),
+              icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
             )
-          : const SizedBox(),
-      title: Text(title),
+          : null,
+      title: Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+      ),
       actions: actions,
+      expandedHeight: AppTheme.getResponsiveSize(ctx, 200.h, 140.h, 250.h),
+      floating: AppTheme.isMobile(ctx) ? true : false,
+      snap: AppTheme.isMobile(ctx) ? true : false,
+      elevation: AppTheme.isTablet(ctx) ? 4.0 : 0.0,
+      backgroundColor: MyColor.primary,
+      iconTheme: IconThemeData(color: Colors.white),
+      flexibleSpace: FlexibleSpaceBar(
+        background: Container(color: MyColor.primary),
+        centerTitle: AppTheme.isTablet(ctx) ? true : false,
+      ),
     );
   }
 
@@ -93,27 +134,4 @@ class MyDimens {
       ),
     );
   }
-
-  static Center get getLoadingIndication =>
-      const Center(child: CircularProgressIndicator());
-
-  static Center get getNoItemText => const Center(
-    child: SizedBox(
-      height: 800,
-      width: 80,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.inbox, size: 80, color: Colors.grey),
-            SizedBox(height: 16),
-            Text(
-              'No data found..',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
 }
