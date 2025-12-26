@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 import 'package:hello_bazar/feature/stock/data/model/stock_item.dart';
+import 'package:hello_bazar/feature/stock/presentation/screen/stock_restock_screen.dart';
 
 class StockScreen extends StatefulWidget {
   const StockScreen({super.key});
@@ -15,7 +16,7 @@ class _StockScreenState extends State<StockScreen> {
   String _selectedFilter =
       'all'; // 'all', 'critical', 'low', 'adequate', 'overstocked'
 
-  final List<StockItem> _stockItems = [
+  List<StockItem> _stockItems = [
     StockItem(
       productId: 'PRD001',
       productName: 'Premium Basmati Rice 5kg',
@@ -142,42 +143,65 @@ class _StockScreenState extends State<StockScreen> {
       final status = item.stockStatus;
       switch (_selectedFilter) {
         case 'critical':
-          return status == 'critical';
+          return status == 'critical' ||
+              status == 'very-low' ||
+              status == 'out-of-stock';
         case 'low':
           return status == 'low';
         case 'adequate':
           return status == 'adequate';
+        case 'high':
+          return status == 'high';
         case 'overstocked':
           return status == 'overstocked';
+        case 'out-of-stock':
+          return status == 'out-of-stock';
         default:
           return true;
       }
     }).toList();
 
-    // Sort by stock status priority (critical first)
+    // Sort by stock status priority with all new statuses
     filtered.sort((a, b) {
       final statusPriority = {
-        'critical': 0,
-        'low': 1,
-        'adequate': 2,
-        'overstocked': 3,
+        'out-of-stock': 0,
+        'critical': 1,
+        'very-low': 2,
+        'low': 3,
+        'adequate': 4,
+        'high': 5,
+        'overstocked': 6,
       };
-      return statusPriority[a.stockStatus]!.compareTo(
-        statusPriority[b.stockStatus]!,
-      );
+
+      // Use null-safe access with default value
+      final priorityA = statusPriority[a.stockStatus] ?? 10;
+      final priorityB = statusPriority[b.stockStatus] ?? 10;
+
+      return priorityA.compareTo(priorityB);
     });
 
     return filtered;
   }
 
-  int get _criticalCount =>
-      _stockItems.where((i) => i.stockStatus == 'critical').length;
+  int get _criticalCount => _stockItems
+      .where(
+        (i) =>
+            i.stockStatus == 'critical' ||
+            i.stockStatus == 'very-low' ||
+            i.stockStatus == 'out-of-stock',
+      )
+      .length;
   int get _lowStockCount =>
       _stockItems.where((i) => i.stockStatus == 'low').length;
   int get _adequateCount =>
       _stockItems.where((i) => i.stockStatus == 'adequate').length;
+  int get _highCount =>
+      _stockItems.where((i) => i.stockStatus == 'high').length;
   int get _overstockedCount =>
       _stockItems.where((i) => i.stockStatus == 'overstocked').length;
+  int get _outOfStockCount =>
+      _stockItems.where((i) => i.stockStatus == 'out-of-stock').length;
+
   double get _totalStockValue =>
       _stockItems.fold(0.0, (sum, i) => sum + i.stockValue);
 
@@ -292,9 +316,22 @@ class _StockScreenState extends State<StockScreen> {
           ),
         ],
       ),
+
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _showRestockDialog();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StockRestockScreen(
+                stockItems: _stockItems,
+                onRestockComplete: (updatedItems) {
+                  setState(() {
+                    _stockItems = updatedItems;
+                  });
+                },
+              ),
+            ),
+          );
         },
         backgroundColor: MyColor.primary,
         icon: Icon(Icons.add_shopping_cart, color: MyColor.onPrimary),
@@ -309,6 +346,7 @@ class _StockScreenState extends State<StockScreen> {
     );
   }
 
+  // The rest of your existing methods remain the same...
   Widget _buildSummaryBanner() {
     return Container(
       margin: EdgeInsets.all(16.w),
@@ -456,7 +494,20 @@ class _StockScreenState extends State<StockScreen> {
                 child: _buildBannerStat(
                   icon: Icons.check_circle,
                   label: 'Adequate',
-                  value: '$_adequateCount',
+                  value:
+                      '${_adequateCount + _highCount}', // Combine adequate and high
+                ),
+              ),
+              Container(
+                width: 1.w,
+                height: 40.h,
+                color: MyColor.white.withOpacity(0.2),
+              ),
+              Expanded(
+                child: _buildBannerStat(
+                  icon: Icons.trending_up,
+                  label: 'High',
+                  value: '$_highCount',
                 ),
               ),
             ],
@@ -498,7 +549,7 @@ class _StockScreenState extends State<StockScreen> {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Column(
         children: [
-          if (_criticalCount > 0)
+          if (_outOfStockCount > 0)
             Container(
               margin: EdgeInsets.only(bottom: 12.h),
               padding: EdgeInsets.all(16.w),
@@ -516,6 +567,50 @@ class _StockScreenState extends State<StockScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
+                          'Out of Stock Alert',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: MyColor.error,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        Text(
+                          '$_outOfStockCount item(s) are completely out of stock',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: MyColor.gray700),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: MyColor.error,
+                    size: 16.sp,
+                  ),
+                ],
+              ),
+            ),
+          if (_criticalCount - _outOfStockCount > 0)
+            Container(
+              margin: EdgeInsets.only(bottom: 12.h),
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: MyColor.error.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: MyColor.error.withOpacity(0.7),
+                  width: 1.w,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.priority_high, color: MyColor.error, size: 24.sp),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
                           'Critical Stock Alert',
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
@@ -524,7 +619,7 @@ class _StockScreenState extends State<StockScreen> {
                               ),
                         ),
                         Text(
-                          '$_criticalCount item(s) need immediate restocking',
+                          '${_criticalCount - _outOfStockCount} item(s) at critical levels',
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: MyColor.gray700),
                         ),
@@ -603,7 +698,11 @@ class _StockScreenState extends State<StockScreen> {
           SizedBox(width: 8.w),
           _buildFilterChip('Adequate', 'adequate', _adequateCount),
           SizedBox(width: 8.w),
+          _buildFilterChip('High', 'high', _highCount),
+          SizedBox(width: 8.w),
           _buildFilterChip('Overstocked', 'overstocked', _overstockedCount),
+          SizedBox(width: 8.w),
+          _buildFilterChip('Out of Stock', 'out-of-stock', _outOfStockCount),
         ],
       ),
     );
@@ -637,32 +736,54 @@ class _StockScreenState extends State<StockScreen> {
     Color statusColor;
     IconData statusIcon;
     String statusText;
+    String statusTooltip;
 
     switch (item.stockStatus) {
+      case 'out-of-stock':
+        statusColor = MyColor.error;
+        statusIcon = Icons.error_outline;
+        statusText = 'OUT OF STOCK';
+        statusTooltip = 'No stock available';
+        break;
       case 'critical':
         statusColor = MyColor.error;
         statusIcon = Icons.priority_high;
         statusText = 'CRITICAL';
+        statusTooltip = 'Below 50% of minimum stock';
+        break;
+      case 'very-low':
+        statusColor = Color(0xFFF97316); // Orange
+        statusIcon = Icons.warning_amber;
+        statusText = 'VERY LOW';
+        statusTooltip = 'Below minimum stock';
         break;
       case 'low':
         statusColor = MyColor.warning;
         statusIcon = Icons.warning_amber;
         statusText = 'LOW STOCK';
+        statusTooltip = 'Below reorder point';
+        break;
+      case 'high':
+        statusColor = Color(0xFF10B981); // Emerald
+        statusIcon = Icons.arrow_upward;
+        statusText = 'HIGH';
+        statusTooltip = 'Above 90% of max stock';
         break;
       case 'overstocked':
-        statusColor = Color(0xFF0984E3);
+        statusColor = Color(0xFF0984E3); // Blue
         statusIcon = Icons.inventory;
         statusText = 'OVERSTOCKED';
+        statusTooltip = 'Exceeds maximum stock';
         break;
+      case 'adequate':
       default:
         statusColor = MyColor.success;
         statusIcon = Icons.check_circle;
         statusText = 'ADEQUATE';
+        statusTooltip = 'Stock level is optimal';
     }
 
-    final daysSinceRestock = DateTime.now()
-        .difference(item.lastRestocked)
-        .inDays;
+    final daysSinceRestock = item.daysSinceLastRestocked;
 
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
@@ -757,30 +878,33 @@ class _StockScreenState extends State<StockScreen> {
                         ],
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                        vertical: 6.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(statusIcon, color: statusColor, size: 12.sp),
-                          SizedBox(width: 4.w),
-                          Text(
-                            statusText,
-                            style: Theme.of(context).textTheme.labelSmall
-                                ?.copyWith(
-                                  color: statusColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 10.sp,
-                                ),
-                          ),
-                        ],
+                    Tooltip(
+                      message: statusTooltip,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: statusColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(statusIcon, color: statusColor, size: 12.sp),
+                            SizedBox(width: 4.w),
+                            Text(
+                              statusText,
+                              style: Theme.of(context).textTheme.labelSmall
+                                  ?.copyWith(
+                                    color: statusColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10.sp,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -809,7 +933,7 @@ class _StockScreenState extends State<StockScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(4.r),
                       child: LinearProgressIndicator(
-                        value: item.currentStock / item.maxStock,
+                        value: item.stockPercentage,
                         backgroundColor: MyColor.gray200,
                         valueColor: AlwaysStoppedAnimation<Color>(statusColor),
                         minHeight: 8.h,
@@ -915,16 +1039,96 @@ class _StockScreenState extends State<StockScreen> {
 
   void _showStockDetailDialog(StockItem item) {
     // Show detailed stock information dialog
-  }
-
-  void _showRestockDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Restock Item'),
-        content: Text('Select item to restock...'),
-        actions: [TextButton(onPressed: () {}, child: Text("Cancel"))],
+        title: Text(item.productName),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.qr_code, color: MyColor.primary),
+                title: Text('SKU'),
+                subtitle: Text(item.sku),
+              ),
+              ListTile(
+                leading: Icon(Icons.category, color: MyColor.gray600),
+                title: Text('Category'),
+                subtitle: Text(item.category),
+              ),
+              ListTile(
+                leading: Icon(Icons.numbers, color: MyColor.gray600),
+                title: Text('Current Stock'),
+                subtitle: Text('${item.currentStock} ${item.unit}'),
+              ),
+              ListTile(
+                leading: Icon(Icons.settings, color: MyColor.gray600),
+                title: Text('Stock Limits'),
+                subtitle: Text(
+                  'Min: ${item.minStock} • Max: ${item.maxStock} • Reorder: ${item.reorderPoint}',
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.attach_money, color: MyColor.gray600),
+                title: Text('Cost'),
+                subtitle: Text('৳${item.costPerUnit} per ${item.unit}'),
+              ),
+              ListTile(
+                leading: Icon(Icons.business, color: MyColor.gray600),
+                title: Text('Supplier'),
+                subtitle: Text(item.supplier),
+              ),
+              ListTile(
+                leading: Icon(Icons.calendar_today, color: MyColor.gray600),
+                title: Text('Last Restocked'),
+                subtitle: Text(
+                  '${item.lastRestocked.day}/${item.lastRestocked.month}/${item.lastRestocked.year}',
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StockRestockScreen(
+                    stockItems: _stockItems,
+                    onRestockComplete: (updatedItems) {
+                      setState(() {
+                        _stockItems = updatedItems;
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+            child: Text('Add to Restock'),
+          ),
+        ],
       ),
     );
   }
+}
+
+class RestockItem {
+  final String productId;
+  final String productName;
+  final int? quantity;
+  final double costPerUnit;
+
+  RestockItem({
+    required this.productId,
+    required this.productName,
+    required this.quantity,
+    required this.costPerUnit,
+  });
 }
