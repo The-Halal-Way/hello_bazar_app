@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 
 class ProductAddScreen extends StatefulWidget {
@@ -24,6 +25,12 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
   String? _imagePath;
   bool _trackStock = true;
 
+  // New fields for dates
+  DateTime? _productionDate;
+  DateTime? _expiryDate;
+  final TextEditingController _productionDateController = TextEditingController();
+  final TextEditingController _expiryDateController = TextEditingController();
+
   final List<String> _categories = [
     'Grains',
     'Cooking Oil',
@@ -41,6 +48,20 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
   final List<String> _units = ['pcs', 'kg', 'gm', 'ltr', 'ml', 'box', 'pack'];
 
   @override
+  void initState() {
+    super.initState();
+    // Set initial production date to today
+    _productionDate = DateTime.now();
+    _productionDateController.text = DateFormat(
+      'dd/MM/yyyy',
+    ).format(DateTime.now());
+
+    // Set default expiry date to 1 year from now
+    _expiryDate = DateTime.now().add(Duration(days: 365));
+    _expiryDateController.text = DateFormat('dd/MM/yyyy').format(_expiryDate!);
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _skuController.dispose();
@@ -50,7 +71,75 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
     _stockController.dispose();
     _minStockController.dispose();
     _descriptionController.dispose();
+    _productionDateController.dispose();
+    _expiryDateController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectProductionDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _productionDate ?? DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: MyColor.primary,
+              onPrimary: MyColor.onPrimary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _productionDate) {
+      setState(() {
+        _productionDate = picked;
+        _productionDateController.text = DateFormat(
+          'dd/MM/yyyy',
+        ).format(picked);
+      });
+    }
+  }
+
+  Future<void> _selectExpiryDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _expiryDate ?? DateTime.now().add(Duration(days: 365)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2030),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: MyColor.primary,
+              onPrimary: MyColor.onPrimary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _expiryDate) {
+      setState(() {
+        _expiryDate = picked;
+        _expiryDateController.text = DateFormat('dd/MM/yyyy').format(picked);
+
+        // Calculate and show shelf life in days
+        if (_productionDate != null) {
+          final shelfLife = picked.difference(_productionDate!).inDays;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Shelf Life: $shelfLife days'),
+              backgroundColor: MyColor.success,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      });
+    }
   }
 
   @override
@@ -106,7 +195,6 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                 SizedBox(height: 16.h),
 
                 Row(
-                  spacing: 12.w,
                   children: [
                     Expanded(
                       child: _buildTextField(
@@ -122,6 +210,7 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                         },
                       ),
                     ),
+                    SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,6 +351,60 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                     ],
                   ),
                   SizedBox(height: 16.h),
+
+                  // Production Date
+                  _buildDateField(
+                    controller: _productionDateController,
+                    label: 'Production Date',
+                    hint: 'Select production date',
+                    icon: Icons.date_range,
+                    onTap: () => _selectProductionDate(context),
+                  ),
+
+                  SizedBox(height: 16.h),
+
+                  // Expiry Date
+                  _buildDateField(
+                    controller: _expiryDateController,
+                    label: 'Expiry Date',
+                    hint: 'Select expiry date',
+                    icon: Icons.event_busy,
+                    onTap: () => _selectExpiryDate(context),
+                    isRequired: false,
+                    validator: (value) {
+                      if (_productionDate != null && _expiryDate != null) {
+                        if (_expiryDate!.isBefore(_productionDate!)) {
+                          return 'Expiry date cannot be before production date';
+                        }
+
+                        // Show warning if expiry is within 30 days
+                        final daysUntilExpiry = _expiryDate!
+                            .difference(DateTime.now())
+                            .inDays;
+                        if (daysUntilExpiry <= 30) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Warning: Product will expire in $daysUntilExpiry days',
+                              ),
+                              backgroundColor: MyColor.warning,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      }
+                      return null;
+                    },
+                  ),
+
+                  SizedBox(height: 16.h),
+
+                  // Shelf Life Indicator
+                  if (_productionDate != null && _expiryDate != null)
+                    _buildShelfLifeIndicator(),
+
+                  SizedBox(height: 16.h),
+
                   Text(
                     'Unit *',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -459,6 +602,126 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
           validator: validator,
         ),
       ],
+    );
+  }
+
+  Widget _buildDateField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData icon,
+    required VoidCallback onTap,
+    bool isRequired = true,
+    String? Function(String?)? validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label + (isRequired ? ' *' : ' (Optional)'),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        SizedBox(height: 8.h),
+        InkWell(
+          onTap: onTap,
+          child: IgnorePointer(
+            child: TextFormField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: hint,
+                prefixIcon: Icon(icon),
+                suffixIcon: Icon(Icons.calendar_today, color: MyColor.primary),
+              ),
+              validator: validator,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShelfLifeIndicator() {
+    if (_productionDate == null || _expiryDate == null) {
+      return SizedBox();
+    }
+
+    final shelfLife = _expiryDate!.difference(_productionDate!).inDays;
+    Color indicatorColor;
+    String statusText;
+    IconData statusIcon;
+
+    if (shelfLife <= 30) {
+      indicatorColor = MyColor.error;
+      statusText = 'SHORT SHELF LIFE';
+      statusIcon = Icons.warning;
+    } else if (shelfLife <= 90) {
+      indicatorColor = MyColor.warning;
+      statusText = 'MODERATE SHELF LIFE';
+      statusIcon = Icons.info;
+    } else {
+      indicatorColor = MyColor.success;
+      statusText = 'LONG SHELF LIFE';
+      statusIcon = Icons.check_circle;
+    }
+
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: indicatorColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: indicatorColor, width: 1.w),
+      ),
+      child: Row(
+        children: [
+          Icon(statusIcon, color: indicatorColor, size: 24.sp),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Shelf Life',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 4.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '$shelfLife days',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: indicatorColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 4.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: indicatorColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(6.r),
+                      ),
+                      child: Text(
+                        statusText,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: indicatorColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -670,7 +933,7 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
           child: ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                // Create product object
+                // Create product object with new fields
                 final newProduct = Product(
                   id: DateTime.now().millisecondsSinceEpoch.toString(),
                   name: _nameController.text,
@@ -691,6 +954,8 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                             : 'in_stock')
                       : 'in_stock',
                   barcode: _barcodeController.text,
+                  productionDate: _productionDate,
+                  expiryDate: _expiryDate,
                 );
 
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -730,7 +995,7 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
   }
 }
 
-// Product Model (same as before)
+// Updated Product Model with new fields
 class Product {
   final String id;
   final String name;
@@ -744,6 +1009,8 @@ class Product {
   final String image;
   final String status;
   final String barcode;
+  final DateTime? productionDate;
+  final DateTime? expiryDate;
 
   Product({
     required this.id,
@@ -758,5 +1025,7 @@ class Product {
     required this.image,
     required this.status,
     required this.barcode,
+    this.productionDate,
+    this.expiryDate,
   });
 }
