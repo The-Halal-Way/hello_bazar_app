@@ -4,6 +4,7 @@ import 'package:hello_bazar/core/constants/my_color.dart';
 import 'package:hello_bazar/core/util/my_dimens.dart';
 import 'package:hello_bazar/feature/customer/presentation/screen/customer_screen.dart';
 import 'package:hello_bazar/feature/due/presentation/screen/due_screen.dart';
+import 'package:hello_bazar/feature/hr/presentation/screen/hr_screen.dart';
 import 'package:hello_bazar/feature/ledger/presentation/screen/ledger_screen.dart';
 import 'package:hello_bazar/feature/product/presentation/screen/product_screen.dart';
 import 'package:hello_bazar/feature/profit_loss/presentation/screen/profit_loss_screen.dart';
@@ -14,7 +15,6 @@ import 'package:hello_bazar/feature/warehouse/presentation/screen/warehouse_scre
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -271,7 +271,15 @@ class HomeScreen extends StatelessWidget {
         'color': const Color(0xFFF97316),
         'screen': WarehouseScreen(),
       },
+      // Add HR Management here
+      {
+        'title': 'HR Management',
+        'icon': Icons.people_alt_outlined,
+        'color': const Color(0xFFEC4899),
+        'screen': HrScreen(),
+      },
     ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
