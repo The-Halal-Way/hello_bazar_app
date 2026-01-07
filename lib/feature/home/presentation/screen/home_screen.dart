@@ -6,6 +6,7 @@ import 'package:hello_bazar/feature/customer/presentation/screen/customer_screen
 import 'package:hello_bazar/feature/due/presentation/screen/due_screen.dart';
 import 'package:hello_bazar/feature/hr/presentation/screen/hr_screen.dart';
 import 'package:hello_bazar/feature/ledger/presentation/screen/ledger_screen.dart';
+import 'package:hello_bazar/feature/mortgage/presentation/screen/mortgage_screen.dart';
 import 'package:hello_bazar/feature/product/presentation/screen/product_screen.dart';
 import 'package:hello_bazar/feature/profit_loss/presentation/screen/profit_loss_screen.dart';
 import 'package:hello_bazar/feature/purchase/presentation/screen/purchase_screen.dart';
@@ -271,12 +272,17 @@ class HomeScreen extends StatelessWidget {
         'color': const Color(0xFFF97316),
         'screen': WarehouseScreen(),
       },
-      // Add HR Management here
       {
         'title': 'HR Management',
         'icon': Icons.people_alt_outlined,
         'color': const Color(0xFFEC4899),
         'screen': HrScreen(),
+      },
+      {
+        'title': 'Mortgage',
+        'icon': Icons.home_work_outlined,
+        'color': const Color(0xFF8B4513),
+        'screen': MortgageScreen(),
       },
     ];
 
