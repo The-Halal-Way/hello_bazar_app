@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hello_bazar/feature/hr/presentation/screen/hr_add_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:hello_bazar/core/constants/my_color.dart';
 
@@ -236,12 +237,15 @@ class _HrScreenState extends State<HrScreen> {
 
   List<Employee> get _filteredEmployees {
     var filtered = _employees.where((employee) {
-      final matchesSearch = employee.name
-              .toLowerCase()
-              .contains(_searchQuery.toLowerCase()) ||
+      final matchesSearch =
+          employee.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           employee.id.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          employee.designation.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          employee.department.toLowerCase().contains(_searchQuery.toLowerCase());
+          employee.designation.toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          ) ||
+          employee.department.toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          );
 
       if (!matchesSearch) return false;
 
@@ -272,11 +276,15 @@ class _HrScreenState extends State<HrScreen> {
   }
 
   int get _activeCount => _employees.where((e) => e.status == 'active').length;
-  int get _onLeaveCount => _employees.where((e) => e.status == 'on-leave').length;
-  int get _inactiveCount => _employees.where((e) => e.status == 'inactive').length;
-  double get _totalMonthlySalary => _employees.fold(0.0, (sum, e) => sum + e.salary);
-  double get _averagePerformance => _employees.isNotEmpty 
-      ? _employees.map((e) => e.performance.rating).reduce((a, b) => a + b) / _employees.length
+  int get _onLeaveCount =>
+      _employees.where((e) => e.status == 'on-leave').length;
+  int get _inactiveCount =>
+      _employees.where((e) => e.status == 'inactive').length;
+  double get _totalMonthlySalary =>
+      _employees.fold(0.0, (sum, e) => sum + e.salary);
+  double get _averagePerformance => _employees.isNotEmpty
+      ? _employees.map((e) => e.performance.rating).reduce((a, b) => a + b) /
+            _employees.length
       : 0.0;
 
   @override
@@ -297,7 +305,10 @@ class _HrScreenState extends State<HrScreen> {
           IconButton(
             icon: Icon(Icons.add, color: MyColor.onSurfaceVariant),
             onPressed: () {
-              _showAddEmployeeDialog();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HrAddScreen()),
+              );
             },
           ),
           IconButton(
@@ -401,14 +412,17 @@ class _HrScreenState extends State<HrScreen> {
             child: _filteredEmployees.isEmpty
                 ? _buildEmptyState()
                 : _selectedView == 'list'
-                    ? _buildListView()
-                    : _buildGridView(),
+                ? _buildListView()
+                : _buildGridView(),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _showAddEmployeeDialog();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HrAddScreen()),
+          );
         },
         backgroundColor: MyColor.primary,
         icon: Icon(Icons.person_add, color: MyColor.onPrimary),
@@ -467,9 +481,9 @@ class _HrScreenState extends State<HrScreen> {
                 SizedBox(height: 4.h),
                 Text(
                   'Manage your team efficiently',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: MyColor.gray600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: MyColor.gray600),
                 ),
               ],
             ),
@@ -556,7 +570,8 @@ class _HrScreenState extends State<HrScreen> {
         statusIcon = Icons.help;
     }
 
-    final monthsInCompany = DateTime.now().difference(employee.joinDate).inDays ~/ 30;
+    final monthsInCompany =
+        DateTime.now().difference(employee.joinDate).inDays ~/ 30;
 
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
@@ -652,13 +667,17 @@ class _HrScreenState extends State<HrScreen> {
                                 ),
                               ),
                               SizedBox(width: 6.w),
-                              Text(
-                                'ID: ${employee.id}',
-                                style: Theme.of(context).textTheme.bodySmall
-                                    ?.copyWith(
-                                      color: MyColor.gray500,
-                                      fontSize: 11.sp,
-                                    ),
+                              Expanded(
+                                child: Text(
+                                  'ID: ${employee.id}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: MyColor.gray500,
+                                        fontSize: 11.sp,
+                                      ),
+                                ),
                               ),
                             ],
                           ),
@@ -712,14 +731,16 @@ class _HrScreenState extends State<HrScreen> {
                           SizedBox(height: 4.h),
                           Row(
                             children: [
-                              Icon(Icons.star, color: Colors.amber, size: 14.sp),
+                              Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                                size: 14.sp,
+                              ),
                               SizedBox(width: 4.w),
                               Text(
                                 '${employee.performance.rating.toStringAsFixed(1)}/5.0',
                                 style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                    ?.copyWith(fontWeight: FontWeight.w600),
                               ),
                             ],
                           ),
@@ -887,9 +908,9 @@ class _HrScreenState extends State<HrScreen> {
                 // Employee Name
                 Text(
                   employee.name,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -897,19 +918,16 @@ class _HrScreenState extends State<HrScreen> {
                 // Designation
                 Text(
                   employee.designation,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: MyColor.gray600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: MyColor.gray600),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 4.h),
                 // Department
                 Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 6.w,
-                    vertical: 2.h,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                   decoration: BoxDecoration(
                     color: MyColor.gray100,
                     borderRadius: BorderRadius.circular(6.r),
@@ -998,10 +1016,9 @@ class _HrScreenState extends State<HrScreen> {
         SizedBox(height: 2.h),
         Text(
           label,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: color,
-            fontSize: 9.sp,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.labelSmall?.copyWith(color: color, fontSize: 9.sp),
         ),
       ],
     );
@@ -1024,14 +1041,17 @@ class _HrScreenState extends State<HrScreen> {
           SizedBox(height: 8.h),
           Text(
             'Try adjusting your search or filters',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: MyColor.gray500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: MyColor.gray500),
           ),
           SizedBox(height: 16.h),
           ElevatedButton(
             onPressed: () {
-              _showAddEmployeeDialog();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HrAddScreen()),
+              );
             },
             child: Text('Add First Employee'),
           ),
@@ -1069,7 +1089,10 @@ class _HrScreenState extends State<HrScreen> {
 
                 // Header
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 8.h,
+                  ),
                   child: Row(
                     children: [
                       Container(
@@ -1097,27 +1120,22 @@ class _HrScreenState extends State<HrScreen> {
                           children: [
                             Text(
                               employee.name,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             Text(
                               employee.designation,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    color: MyColor.primary,
-                                  ),
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(color: MyColor.primary),
                             ),
                           ],
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.close, color: MyColor.onSurfaceVariant),
+                        icon: Icon(
+                          Icons.close,
+                          color: MyColor.onSurfaceVariant,
+                        ),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ],
@@ -1140,8 +1158,9 @@ class _HrScreenState extends State<HrScreen> {
                                 vertical: 6.h,
                               ),
                               decoration: BoxDecoration(
-                                color: _getStatusColor(employee.status)
-                                    .withOpacity(0.1),
+                                color: _getStatusColor(
+                                  employee.status,
+                                ).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(12.r),
                               ),
                               child: Row(
@@ -1159,7 +1178,9 @@ class _HrScreenState extends State<HrScreen> {
                                         .textTheme
                                         .labelSmall
                                         ?.copyWith(
-                                          color: _getStatusColor(employee.status),
+                                          color: _getStatusColor(
+                                            employee.status,
+                                          ),
                                           fontWeight: FontWeight.bold,
                                         ),
                                   ),
@@ -1169,9 +1190,7 @@ class _HrScreenState extends State<HrScreen> {
                             SizedBox(width: 12.w),
                             Text(
                               'ID: ${employee.id}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
+                              style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(color: MyColor.gray600),
                             ),
                           ],
@@ -1221,7 +1240,9 @@ class _HrScreenState extends State<HrScreen> {
                             ),
                             _buildDetailItem(
                               label: 'Join Date',
-                              value: DateFormat('dd MMM yyyy').format(employee.joinDate),
+                              value: DateFormat(
+                                'dd MMM yyyy',
+                              ).format(employee.joinDate),
                               icon: Icons.calendar_today,
                             ),
                             _buildDetailItem(
@@ -1240,7 +1261,8 @@ class _HrScreenState extends State<HrScreen> {
                             Expanded(
                               child: _buildMetricCard(
                                 title: 'Performance',
-                                value: employee.performance.rating.toStringAsFixed(1),
+                                value: employee.performance.rating
+                                    .toStringAsFixed(1),
                                 subtitle: '/5.0 rating',
                                 icon: Icons.star,
                                 color: Colors.amber,
@@ -1250,7 +1272,8 @@ class _HrScreenState extends State<HrScreen> {
                             Expanded(
                               child: _buildMetricCard(
                                 title: 'Attendance',
-                                value: employee.attendance.totalPresent.toString(),
+                                value: employee.attendance.totalPresent
+                                    .toString(),
                                 subtitle: 'days present',
                                 icon: Icons.calendar_today,
                                 color: MyColor.success,
@@ -1267,7 +1290,8 @@ class _HrScreenState extends State<HrScreen> {
                             Expanded(
                               child: _buildMetricCard(
                                 title: 'Tasks Done',
-                                value: employee.performance.completedTasks.toString(),
+                                value: employee.performance.completedTasks
+                                    .toString(),
                                 subtitle: 'completed',
                                 icon: Icons.task_alt,
                                 color: MyColor.primary,
@@ -1277,7 +1301,8 @@ class _HrScreenState extends State<HrScreen> {
                             Expanded(
                               child: _buildMetricCard(
                                 title: 'Pending',
-                                value: employee.performance.pendingTasks.toString(),
+                                value: employee.performance.pendingTasks
+                                    .toString(),
                                 subtitle: 'tasks',
                                 icon: Icons.pending_actions,
                                 color: MyColor.warning,
@@ -1343,9 +1368,9 @@ class _HrScreenState extends State<HrScreen> {
             SizedBox(width: 8.w),
             Text(
               title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -1357,9 +1382,7 @@ class _HrScreenState extends State<HrScreen> {
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(color: MyColor.outlineVariant, width: 1.w),
           ),
-          child: Column(
-            children: children,
-          ),
+          child: Column(children: children),
         ),
       ],
     );
@@ -1382,16 +1405,16 @@ class _HrScreenState extends State<HrScreen> {
               children: [
                 Text(
                   label,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: MyColor.gray600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: MyColor.gray600),
                 ),
                 SizedBox(height: 2.h),
                 Text(
                   value,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -1442,69 +1465,9 @@ class _HrScreenState extends State<HrScreen> {
           SizedBox(height: 2.h),
           Text(
             subtitle,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: MyColor.gray500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showAddEmployeeDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Add New Employee'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Full Name',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Designation',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Department',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.phone,
-                ),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Add employee logic
-              Navigator.pop(context);
-            },
-            child: Text('Add Employee'),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: MyColor.gray500),
           ),
         ],
       ),
